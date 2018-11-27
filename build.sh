@@ -8,7 +8,7 @@ useradd -c NFSEN -G www-data netflow
 mkdir -p /var/www
 ln -s /var/www/nfsen /var/www/html
 
-apt-get -y install build-essential flex bison rrdtool librrds-perl libmailtools-perl libsocket6-perl librrd-dev lighttpd php5-cgi php5-cli wget
+apt-get -y install automake libtool libbz2-dev unzip build-essential flex bison rrdtool librrds-perl libmailtools-perl libsocket6-perl librrd-dev lighttpd php5-cgi php5-cli wget
 
 lighttpd-enable-mod fastcgi-php
 
@@ -18,11 +18,12 @@ lighttpd-enable-mod fastcgi-php
 mkdir -p /build
 
 cd /build
-wget http://sourceforge.net/projects/nfdump/files/stable/nfdump-1.6.13/nfdump-1.6.13.tar.gz
-tar -xzf nfdump-1.6.13.tar.gz
-cd nfdump-1.6.13
+wget --no-check-certificate -O master.zip https://github.com/phaag/nfdump/archive/master.zip
+unzip master.zip
+cd  nfdump-master
+./autogen.sh
 # clean ugly mac files
-find . | grep "\\._" | xargs rm
+#find . | grep "\\._" | xargs rm
 
 ./configure --enable-nfprofile --enable-sflow
 make && make install
