@@ -5,6 +5,7 @@
 #cp /app/nfsen.conf /build/nfsen-1.3.7/etc/
 php /gen_conf.php > /build/nfsen-1.3.8/etc/nfsen.conf
 cd /build/nfsen-1.3.8
+ldconfig
 echo | ./install.pl etc/nfsen.conf
 
 # start nfsen
