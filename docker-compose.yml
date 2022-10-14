@@ -1,0 +1,13 @@
+version: "2.1"
+services:
+  nfsen:
+    image: aastefanov/nfsen
+    container_name: nfsen
+    volumes:
+      - ./data:/data
+      - ./config:/config
+      - ./plugins:/plugins
+    ports:
+      - "80:80"
+      - "2055:2055"
+    restart: unless-stopped

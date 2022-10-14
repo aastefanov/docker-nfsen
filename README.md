@@ -1,15 +1,41 @@
-Docker NFSEN
+Docker NfSen
 ============
 
-NFSEN is a frontent to NFDUMP. It is used to collect and process NetFlow data from network devices.
+NfSen is a frontend to NFDUMP. It is used to collect and process NetFlow data from network devices.
 
 How to run
 ----------
 
-You can use ./run.sh or write your own startup:
+Ports:
 
-	docker run -d -h netflow --name netflow -e NFSEN_SOURCES="uplink1,9995,#ff0000,netflow:uplink2,9996,#00ff00,netflow" -p 8080:80 -p 9995-9996:9995-9996/udp -v `pwd`/data:/data netflow "$@"
+- `80/tcp` - the nfsen WebUI
+- Other ports configured in the `nfsen.conf` file - for getting data from configured devices
 
-NFSEN_SOURCES defines NetFlow sources.
-Each source has 4 fields: name, port, color, type. Multiple sources are separated by collon.
-Do not forget to bind extra UDP ports and a data folder where nfdump and nfsen store their data.
+Volumes:
+
+| Directory           | nfsen.conf var        |
+|---------------------|-----------------------|
+| `/config`           | `$CONFDIR`            |
+| `/data`             | `$VARDIR`             | 
+| `/plugins/backend`  | `$BACKEND_PLUGINDIR`  |
+| `/plugins/frontend` | `$FRONTEND_PLUGINDIR` |
+
+Example compose file:
+
+```yaml
+---
+version: "2.1"
+services:
+  nfsen:
+    image: aastefanov/nfsen
+    container_name: nfsen
+    volumes:
+      - /path/to/data:/data
+      - /path/to/config:/config
+      - /path/to/plugins:/plugins
+    ports:
+      - "80:80"
+      - "2055:2055" # and other ports configured for netflow/sflow/ipfix
+    restart: unless-stopped
+```
+
